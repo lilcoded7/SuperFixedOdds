@@ -25,11 +25,11 @@ from drf_yasg import openapi
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Olapy",
+        title="SuperFixed",
         default_version="v1",
-        description="API documentation for Olapy",
+        description="API documentation for SuperFixed",
         terms_of_service="",
-        contact=openapi.Contact(email="info@gmail.com"),
+        contact=openapi.Contact(email="info@superfixed.com"),
         license=openapi.License(name="Test License"),
     ),
     public=True,
@@ -39,7 +39,8 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v17superfixed/odds/', include('superfixed.urls'))
+    path('api/v1/superfixed/odds/', include('superfixed.urls')),
+    path('api/v1/acocunts/', include('accounts.urls'))
 ]
 
 if settings.DEBUG == True:

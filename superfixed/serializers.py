@@ -1,13 +1,31 @@
 from rest_framework import serializers
 from superfixed.models.slips import *
+from superfixed.models.brandaccounts import BrandAccount, Customization
+from accounts.serializers import UserSerializer
+
+
+class BrandAccountSerializer(serializers.ModelSerializer):
+    user = UserSerializer
+    class Meta:
+        model=BrandAccount
+        fields = '__all__'
+
+
+class CustomizationAccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Customization
+        fields = '__all__'
+
+class AccountCustomizationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Customization
+        fields='__all__'
+
 
 class SlipSerializer(serializers.ModelSerializer):
     class Meta:
         model=Betslip
         fields = "__all__"
-
-
-
 
 
 class PurchaseBetSlipSerializer(serializers.Serializer):
@@ -23,3 +41,4 @@ class PurchaseBetSlipSerializer(serializers.Serializer):
         if value <= 0:
             raise serializers.ValidationError("amount should be greater than 0")
         return value
+    

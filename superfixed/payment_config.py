@@ -15,15 +15,12 @@ class NaloPayConf:
         self.password = settings.MERCHANTS_PASSWORD
         self.callback_url = 'http://127.0.0.1:8000'
 
-    def _create_basic_auth_token(self):
-        credentials = f"{self.username}:{self.password}"
-        return base64.b64encode(credentials.encode()).decode()
 
     def generate_transfer_token(self):
         url = f"{self.baseUrl}/clientapi/generate-payment-token/"
 
         headers = {
-            "Authorization": f"Basic {self._create_basic_auth_token()}",
+            "Authorization": 'Basic e28ef19a40cb885863362895e7d2c6df09fd417bed99d0138208f280c28152e81772d41303caa8e366d3a4be9ff463ff2002efde1e3db4150d9ed04bf66677f4',
             "Content-Type": "application/json",
         }
 
@@ -36,7 +33,12 @@ class NaloPayConf:
         return response.json()["data"]["token"]
 
     def _generate_hash(self, account_number, amount, reference):
-        message = f"{self.merchant_id}{account_number}{amount}{reference}"
+        # Format amount to 2 decimal places to match standard currency strings (e.g., "50.00")
+        formatted_amount = "{:.2f}".format(float(amount))
+        
+        # Concatenate exactly as the docs say: merchant_id + account_number + amount + reference
+        message = f"{self.merchant_id}{account_number}{formatted_amount}{reference}"
+        
         return hmac.new(
             self.merchant_secret.encode(),
             message.encode(),
@@ -52,23 +54,24 @@ class NaloPayConf:
         if prefix in mtn:
             return "MTN"
         elif prefix in vod:
-            return "VDF"
+            return "TELECEL"
         elif prefix in atl:
-            return "ATL"
+            return "AT"
         else:
             return "UNKNOWN"
 
 
     def collect_payment(self, tx):
         token = self.generate_transfer_token()
-
         url = f"{self.baseUrl}/clientapi/collection/"
-
         network = self.get_network(tx.phone)
+        
+        # Use consistent formatting for both the hash and the payload
+        formatted_amount = "{:.2f}".format(float(tx.amount))
 
         trans_hash = self._generate_hash(
             account_number=tx.phone,
-            amount=tx.amount,
+            amount=formatted_amount, # Pass the formatted string
             reference=tx.transaction_id
         )
 
@@ -77,18 +80,28 @@ class NaloPayConf:
             "token": token
         }
 
+        print(network, ' Network')
+        
+
         data = {
             "merchant_id": self.merchant_id,
             "service_name": "MOMO_TRANSACTION",
             "trans_hash": trans_hash,
             "account_number": tx.phone,
-            "account_name": 'account_name' or 'pending',
+            "account_name": 'pending',
             "network": network,
-            "amount": tx.amount,
+            "amount": formatted_amount, 
             "reference": tx.transaction_id,
             "callback": self.callback_url,
         }
 
         response = requests.post(url, json=data, headers=headers, timeout=30)
+
+        print(response.json())
+        
+        # Debugging: If it still fails, print the response text to see the API's specific error message
+        if response.status_code != 200:
+            print(f"Error Response: {response.text}")
+            
         response.raise_for_status()
         return response.json()

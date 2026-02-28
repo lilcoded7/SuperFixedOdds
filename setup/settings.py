@@ -74,7 +74,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'setup.wsgi.application'
-
+AUTH_USER_MODEL = "accounts.User"
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
@@ -135,3 +135,26 @@ MERCHANT_SECRET ='090d24b9ae10e994eb8158c2e329759dc10f3e06c8cc03c6dc4779216955e5
 MERCHANT_USERNAME='komparinoah1@gmail.com'
 MERCHANTS_PASSWORD='.the,the,the.143@@'
 CALL_BACK_URL=''
+BASIC_AUTH_TOKEN='Basic b5057ec2a0a7e93137302e9565216017be4c75fa7231d8ce22f0d86a46bd1ed77c8e399703cb2f878775e598960656e6f2bfd122266ff3ceaad6f3c5412b16a9'
+
+
+REST_FRAMEWORK = {
+    # Pagination
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 100,
+    # Auths
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",
+    ],
+    "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
+}
+
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+CSRF_TRUSTED_ORIGINS = ['https://api.dyfinancial.coupcode.tech', 'http://localhost', 'https://dyfinancial.coupcode.tech']
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
