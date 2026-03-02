@@ -155,6 +155,6 @@ REST_FRAMEWORK = {
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
-CSRF_TRUSTED_ORIGINS = ['https://api.dyfinancial.coupcode.tech', 'http://localhost', 'https://dyfinancial.coupcode.tech']
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000', 'http://localhost',]
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
