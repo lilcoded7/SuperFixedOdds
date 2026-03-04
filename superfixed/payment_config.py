@@ -81,6 +81,7 @@ class NaloPayConf:
         }
 
         print(network, ' Network')
+        print(tx.phone, 'phone number')
         
 
         data = {

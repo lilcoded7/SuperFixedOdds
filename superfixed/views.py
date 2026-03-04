@@ -59,26 +59,18 @@ class PurchaseBetSlipAPIView(generics.GenericAPIView):
 
 
 class BrandSlipAPIView(generics.GenericAPIView):
-    serializer_class=SlipSerializer
+    serializer_class = SlipSerializer
     permission_classes = [AllowAny]
-
 
     def get(self, request):
 
-        brand_name = request.query_params.get('brand_name')
+        brand_name = request.query_params.get("brand_name")
 
         try:
             brand = BrandAccount.objects.get(abbr=brand_name)
         except BrandAccount.DoesNotExist:
             raise NotFound("Brand account does not exist")
-        
+
         slips = Betslip.objects.filter(brand=brand, is_active=True)
 
-        return Response(
-            {
-                'slips':SlipSerializer(slips, many=True).data
-            }
-        )
-
-
-
+        return Response({"slips": SlipSerializer(slips, many=True).data})
