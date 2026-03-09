@@ -16,6 +16,11 @@ class CustomizationAccountSerializer(serializers.ModelSerializer):
         model=Customization
         fields = '__all__'
 
+class BrandAccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=BrandAccount
+        exclude = ['user', 'balance', 'momo_account_number', 'account_name']
+
 class AccountCustomizationSerializer(serializers.ModelSerializer):
     class Meta:
         model=Customization
@@ -26,6 +31,12 @@ class SlipSerializer(serializers.ModelSerializer):
     class Meta:
         model=Betslip
         fields = "__all__"
+
+
+class BrandSlipSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Betslip
+        exclude=['image']
 
 
 class PurchaseBetSlipSerializer(serializers.Serializer):
@@ -42,3 +53,7 @@ class PurchaseBetSlipSerializer(serializers.Serializer):
             raise serializers.ValidationError("amount should be greater than 0")
         return value
     
+class BrandAccountCustomizationSerializer(serializers.ModelSerializer):
+    customization = BrandAccountSerializer(many=True, read_only=True)
+    class Meta:
+        model = BrandAccount

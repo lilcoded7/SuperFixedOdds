@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import generics
-from superfixed.serializers import SlipSerializer, PurchaseBetSlipSerializer
+from superfixed.serializers import *
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from superfixed.models.slips import Betslip, Transaction
 from rest_framework.response import Response
@@ -59,12 +59,13 @@ class PurchaseBetSlipAPIView(generics.GenericAPIView):
 
 
 class BrandSlipAPIView(generics.GenericAPIView):
-    serializer_class = SlipSerializer
+    serializer_class = BrandSlipSerializer
     permission_classes = [AllowAny]
 
     def get(self, request):
 
-        brand_name = request.query_params.get("brand_name")
+        brand_name = request.headers.get("X-Brand")
+
 
         try:
             brand = BrandAccount.objects.get(abbr=brand_name)
@@ -73,4 +74,30 @@ class BrandSlipAPIView(generics.GenericAPIView):
 
         slips = Betslip.objects.filter(brand=brand, is_active=True)
 
-        return Response({"slips": SlipSerializer(slips, many=True).data})
+        serializer = BrandSlipSerializer(slips, many=True)
+
+        return Response({
+            "brand": brand_name,
+            "slips": serializer.data
+        })
+    
+
+class BrandAcountAPIView(generics.GenericAPIView):
+    serializer_class = BrandAccountCustomizationSerializer
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        brand_name = request.headers.get('X-Brand')
+
+        try:
+            brand = BrandAccount.objects.get(abbr=brand_name)
+        except BrandAccount.DoesNotExist:
+            raise NotFound('brand account not found')
+        
+        return Response(
+            {
+                'brand_account':BrandAccountCustomizationSerializer(brand).data
+            }
+        )
+        
+

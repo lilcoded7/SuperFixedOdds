@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-yzn3v-!f%xdr(@n#@-gt4)t076cu@8^02ym2d=p8kw%!+uau5m
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -49,6 +49,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -155,6 +156,22 @@ REST_FRAMEWORK = {
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
-CSRF_TRUSTED_ORIGINS = ['http://localhost:3000', 'http://localhost',]
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000', 'http://localhost', 'http://superfixedodds.localhost:3000']
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+    "x-brand",  # 👈 ADD THIS
+]
